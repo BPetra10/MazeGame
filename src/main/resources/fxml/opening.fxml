@@ -21,7 +21,8 @@
          <font>
             <Font size="14.0" />
          </font></TextField>
-      <Button fx:id="startButton" layoutX="148.0" layoutY="288.0" mnemonicParsing="false" onAction="#handleStartButton" prefHeight="51.0" prefWidth="125.0" text="Start game">
+      <!--onAction="#handleStartButton"-->
+      <Button fx:id="startButton" layoutX="148.0" layoutY="288.0" mnemonicParsing="false"  prefHeight="51.0" prefWidth="125.0" text="Start game">
          <font>
             <Font size="14.0" />
          </font></Button>
@@ -29,7 +30,8 @@
          <font>
             <Font size="14.0" />
          </font></Label>
-      <Button fx:id="ScoreboardLoad" layoutX="311.0" layoutY="288.0" mnemonicParsing="false" onAction="#handleScoreBoardLoad" prefHeight="51.0" prefWidth="125.0" text="Load scoreboard">
+      <!--onAction="#handleScoreBoardLoad"-->
+      <Button fx:id="ScoreboardLoad" layoutX="311.0" layoutY="288.0" mnemonicParsing="false"  prefHeight="51.0" prefWidth="125.0" text="Load scoreboard">
          <font>
             <Font size="14.0" />
          </font></Button>
