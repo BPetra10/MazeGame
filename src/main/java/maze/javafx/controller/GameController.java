@@ -4,6 +4,11 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import maze.state.Table;
 import org.tinylog.Logger;
 
@@ -31,6 +36,7 @@ public class GameController {
     public void initialize()
     {
         populateGrid();
+        finCirc();
 
         Platform.runLater(() ->messageLabel.setText(String.format("Good luck, %s!", playerName)));
         Logger.info("Starting game");
@@ -59,5 +65,21 @@ public class GameController {
                 BorderStrokeStyle.SOLID,BorderStrokeStyle.SOLID,BorderStrokeStyle.SOLID,BorderStrokeStyle.SOLID,
                 null, new BorderWidths(top,right,bottom,left),null)));
         return field;
+    }
+
+    private void finCirc()
+    {
+        addCircle(1,4);
+
+        Text finish = new Text("CÉL");
+        finish.setFont(Font.font("Times New Roman", FontWeight.BOLD, 25));
+        table_fields[5][2].getChildren().add(finish);
+    }
+
+    private void addCircle(int i, int j)
+    {
+        Circle ball = new Circle(20, 20, 20);
+        ball.setFill(Color.BLUE);
+        table_fields[i][j].getChildren().add(ball);
     }
 }
