@@ -1,5 +1,6 @@
 package maze.javafx.controller;
 
+import javafx.animation.Animation;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -11,15 +12,14 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import maze.state.Table;
 import org.tinylog.Logger;
+import utility.javafx.Stopwatch;
+
+import java.time.Instant;
 
 public class GameController {
     @FXML
     private Label messageLabel;
     private String playerName;
-    @FXML
-    private GridPane gameBoard;
-    private Table table = new Table();
-    private StackPane[][] table_fields = new StackPane[7][7];
 
     /**
      * Setting playerName variable value and "adding to" messageLabel.
@@ -29,14 +29,31 @@ public class GameController {
         this.playerName = playerName;
     }
 
+    @FXML
+    private GridPane gameBoard;
+    private Table table = new Table();
+    private StackPane[][] table_fields = new StackPane[7][7];
+
+    @FXML
+    private Label TimeLabel;
+    private Stopwatch stopwatch = new Stopwatch();
+    private Instant startTime;
+
     /**
      * This method will initialize the game and set the default state.
      * */
     @FXML
     public void initialize()
     {
+        TimeLabel.textProperty().bind(stopwatch.hhmmssProperty());
         populateGrid();
         finCirc();
+
+        startTime = Instant.now();
+        if (stopwatch.getStatus() == Animation.Status.PAUSED) {
+            stopwatch.reset();
+        }
+        stopwatch.start();
 
         Platform.runLater(() ->messageLabel.setText(String.format("Good luck, %s!", playerName)));
         Logger.info("Starting game");
