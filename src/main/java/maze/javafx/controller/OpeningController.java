@@ -13,6 +13,9 @@ import utility.javafx.ControllerHelper;
 import javax.inject.Inject;
 import java.io.IOException;
 
+/**
+ * This controller will manage the Opening.fxml "actions". (Button handling and name check)
+ * */
 public class OpeningController {
     @Inject
     private FXMLLoader fxmlLoader = new FXMLLoader();
