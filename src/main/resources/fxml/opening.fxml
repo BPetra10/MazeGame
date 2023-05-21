@@ -21,8 +21,7 @@
          <font>
             <Font size="14.0" />
          </font></TextField>
-      <!--onAction="#handleStartButton"-->
-      <Button fx:id="startButton" layoutX="148.0" layoutY="288.0" mnemonicParsing="false"  prefHeight="51.0" prefWidth="125.0" text="Start game">
+      <Button fx:id="startButton" layoutX="148.0" layoutY="288.0" mnemonicParsing="false" onAction="#handleStartButton"  prefHeight="51.0" prefWidth="125.0" text="Start game">
          <font>
             <Font size="14.0" />
          </font></Button>
