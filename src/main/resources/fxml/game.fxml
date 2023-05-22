@@ -57,8 +57,7 @@
    <bottom>
       <HBox alignment="CENTER" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-             <!--onAction="#handleResetButton"-->
-            <Button fx:id="resetButton" focusTraversable="false" mnemonicParsing="false" text="Reset" />
+            <Button fx:id="resetButton" focusTraversable="false" onAction="#handleResetButton" mnemonicParsing="false" text="Reset" />
              <!--onAction="#handleGiveUpButton"-->
             <Button fx:id="giveUpButton" focusTraversable="false" mnemonicParsing="false" text="Give Up" />
          </children>

@@ -6,7 +6,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -80,6 +82,25 @@ public class GameController {
 
         Platform.runLater(() ->messageLabel.setText(String.format("Good luck, %s!", playerName)));
         Logger.info("Starting game");
+
+        resetGame();
+    }
+
+    private void resetGame()
+    {
+        stepCount.set(0);
+        isSolved.set(false);
+
+        startTime = Instant.now();
+        if (stopwatch.getStatus() == Animation.Status.PAUSED)
+        {
+            stopwatch.reset();
+        }
+        stopwatch.start();
+
+        removeCircle();
+        ballState = new BallState();
+        finCirc();
     }
 
     private void populateGrid()
@@ -121,6 +142,15 @@ public class GameController {
         Circle ball = new Circle(20, 20, 20);
         ball.setFill(Color.BLUE);
         table_fields[i][j].getChildren().add(ball);
+    }
+
+    private void removeCircle()
+    {
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 7; j++) {
+                table_fields[i][j].getChildren().clear();
+            }
+        }
     }
 
 
@@ -171,6 +201,7 @@ public class GameController {
                     if (restartKeyCombination.match(keyEvent)) {
                         Logger.debug("Restarting game...");
                         stopwatch.stop();
+                        resetGame();
                     } else if (quitKeyCombination.match(keyEvent)) {
                         Logger.debug("Exiting...");
                         Platform.exit();
@@ -191,6 +222,18 @@ public class GameController {
                     }
                 }
         ));
+    }
+
+    /**
+     * Resetting the game to its default state.
+     * @param actionEvent handling Reset Button actions.
+     * */
+    public void handleResetButton(ActionEvent actionEvent)
+    {
+        Logger.debug("{} is pressed", ((Button) actionEvent.getSource()).getText());
+        Logger.info("Resetting game");
+        stopwatch.stop();
+        resetGame();
     }
 
 }
