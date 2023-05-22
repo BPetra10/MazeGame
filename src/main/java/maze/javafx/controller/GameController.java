@@ -2,19 +2,30 @@ package maze.javafx.controller;
 
 import javafx.animation.Animation;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import maze.state.BallState;
+import maze.state.Direction;
 import maze.state.Table;
 import org.tinylog.Logger;
 import utility.javafx.Stopwatch;
 
 import java.time.Instant;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameController {
     @FXML
@@ -34,10 +45,18 @@ public class GameController {
     private Table table = new Table();
     private StackPane[][] table_fields = new StackPane[7][7];
 
+    private BallState ballState = new BallState();
+
     @FXML
     private Label TimeLabel;
     private Stopwatch stopwatch = new Stopwatch();
     private Instant startTime;
+
+    @FXML
+    private Label stepsLabel;
+    private IntegerProperty stepCount = new SimpleIntegerProperty();
+
+    private BooleanProperty isSolved = new SimpleBooleanProperty();
 
     /**
      * This method will initialize the game and set the default state.
@@ -45,7 +64,9 @@ public class GameController {
     @FXML
     public void initialize()
     {
+        stepsLabel.textProperty().bind(stepCount.asString());
         TimeLabel.textProperty().bind(stopwatch.hhmmssProperty());
+
         populateGrid();
         finCirc();
 
@@ -54,6 +75,8 @@ public class GameController {
             stopwatch.reset();
         }
         stopwatch.start();
+
+        registerKeyEventHandler();
 
         Platform.runLater(() ->messageLabel.setText(String.format("Good luck, %s!", playerName)));
         Logger.info("Starting game");
@@ -99,4 +122,75 @@ public class GameController {
         ball.setFill(Color.BLUE);
         table_fields[i][j].getChildren().add(ball);
     }
+
+
+    private void timedRemove(int i, int j)
+    {
+        Timer myTimer = new Timer();
+        myTimer.schedule(new TimerTask(){
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    table_fields[i][j].getChildren().clear();
+                });
+                myTimer.cancel();
+            }
+        }, 200);
+    }
+
+    private void performMove(Direction direction) {
+        int [] balldirection;
+
+        if (ballState.checkMove(direction))
+        {
+            stepCount.set(stepCount.get() + 1);
+            while (ballState.checkMove(direction))
+            {
+                balldirection = ballState.move(direction);
+                Logger.info("Move: {}", direction);
+                Logger.trace("New state of the ball: row: {} col: {} ",balldirection[2],balldirection[3]);
+                addCircle(balldirection[2],balldirection[3]);
+                timedRemove(balldirection[0],balldirection[1]);
+                if (ballState.isGoal())
+                {
+                    isSolved.set(true);
+                }
+            }
+        }else
+        {
+            Logger.warn("Invalid move: {}", direction);
+        }
+    }
+
+    private void registerKeyEventHandler() {
+        final KeyCombination restartKeyCombination = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
+        final KeyCombination quitKeyCombination = new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN);
+        final KeyCombination giveUpKeyCombination = new KeyCodeCombination(KeyCode.G, KeyCombination.CONTROL_DOWN);
+        Platform.runLater(() -> gameBoard.getScene().setOnKeyPressed(
+                keyEvent -> {
+                    if (restartKeyCombination.match(keyEvent)) {
+                        Logger.debug("Restarting game...");
+                        stopwatch.stop();
+                    } else if (quitKeyCombination.match(keyEvent)) {
+                        Logger.debug("Exiting...");
+                        Platform.exit();
+                    }else if(giveUpKeyCombination.match(keyEvent)){
+                        Logger.debug("Giving up the game.");
+                    } else if (keyEvent.getCode() == KeyCode.UP) {
+                        Logger.debug("Up arrow pressed");
+                        performMove(Direction.UP);
+                    } else if (keyEvent.getCode() == KeyCode.RIGHT) {
+                        Logger.debug("Right arrow pressed");
+                        performMove(Direction.RIGHT);
+                    } else if (keyEvent.getCode() == KeyCode.DOWN) {
+                        Logger.debug("Down arrow pressed");
+                        performMove(Direction.DOWN);
+                    } else if (keyEvent.getCode() == KeyCode.LEFT) {
+                        Logger.debug("Left arrow pressed");
+                        performMove(Direction.LEFT);
+                    }
+                }
+        ));
+    }
+
 }
