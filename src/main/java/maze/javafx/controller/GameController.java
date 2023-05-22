@@ -22,6 +22,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import maze.state.BallState;
 import maze.state.Direction;
 import maze.state.Table;
@@ -197,6 +198,7 @@ public class GameController {
                 if (ballState.isGoal())
                 {
                     isSolved.set(true);
+                    Finished(isSolved);
                 }
             }
         }else
@@ -260,6 +262,39 @@ public class GameController {
         Logger.info("The game has has been given up.");
         ControllerHelper.loadAndShowFXML(fxmlLoader,"/fxml/highscores.fxml",
                 (Stage) ((Node) actionEvent.getSource()).getScene().getWindow());
+    }
+
+
+    private void TimedOpen()
+    {
+        var open = Stage.getWindows().stream().filter(Window::isShowing).toList();
+        Timer myTimer = new Timer();
+        myTimer.schedule(new TimerTask(){
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    try {
+                        ControllerHelper.loadAndShowFXML(fxmlLoader,"/fxml/highscores.fxml",
+                                (Stage)(open.get(0)));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                myTimer.cancel();
+            }
+        }, 3000);
+    }
+
+
+    private void Finished(BooleanProperty isFinished) {
+        if (isFinished.get()){
+            Logger.info("Player {} has solved the game in {} steps", playerName, stepCount.get());
+            stopwatch.stop();
+            messageLabel.setText(String.format("Congratulations, %s!", playerName));
+            resetButton.setDisable(true);
+            giveUpButton.setDisable(true);
+            TimedOpen();
+        }
     }
 
 }
