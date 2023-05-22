@@ -8,6 +8,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -19,12 +21,16 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import maze.state.BallState;
 import maze.state.Direction;
 import maze.state.Table;
 import org.tinylog.Logger;
+import utility.javafx.ControllerHelper;
 import utility.javafx.Stopwatch;
 
+import javax.inject.Inject;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -59,6 +65,14 @@ public class GameController {
     private IntegerProperty stepCount = new SimpleIntegerProperty();
 
     private BooleanProperty isSolved = new SimpleBooleanProperty();
+
+    @Inject
+    private FXMLLoader fxmlLoader = new FXMLLoader();
+
+    @FXML
+    private Button resetButton;
+    @FXML
+    private Button giveUpButton;
 
     /**
      * This method will initialize the game and set the default state.
@@ -153,7 +167,6 @@ public class GameController {
         }
     }
 
-
     private void timedRemove(int i, int j)
     {
         Timer myTimer = new Timer();
@@ -207,6 +220,7 @@ public class GameController {
                         Platform.exit();
                     }else if(giveUpKeyCombination.match(keyEvent)){
                         Logger.debug("Giving up the game.");
+                        giveUpButton.fire();
                     } else if (keyEvent.getCode() == KeyCode.UP) {
                         Logger.debug("Up arrow pressed");
                         performMove(Direction.UP);
@@ -234,6 +248,18 @@ public class GameController {
         Logger.info("Resetting game");
         stopwatch.stop();
         resetGame();
+    }
+
+    /**
+     * Giving up the game, and navigating to scores.fxml.
+     * @param actionEvent handling give up button actions.
+     * */
+    public void handleGiveUpButton(ActionEvent actionEvent) throws IOException {
+        Logger.debug("{} is pressed", ((Button) actionEvent.getSource()).getText());
+        stopwatch.stop();
+        Logger.info("The game has has been given up.");
+        ControllerHelper.loadAndShowFXML(fxmlLoader,"/fxml/highscores.fxml",
+                (Stage) ((Node) actionEvent.getSource()).getScene().getWindow());
     }
 
 }
