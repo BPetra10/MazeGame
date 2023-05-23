@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -33,11 +34,15 @@ import utility.javafx.ControllerHelper;
 import utility.javafx.Stopwatch;
 
 import javax.inject.Inject;
+
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * This controller is responsible for the gamePlay.
+ * */
 public class GameController {
     @FXML
     private Label messageLabel;
