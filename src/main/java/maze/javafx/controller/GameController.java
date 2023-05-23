@@ -23,6 +23,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import maze.results.GameResult;
+import maze.results.ScoreReadWrite;
 import maze.state.BallState;
 import maze.state.Direction;
 import maze.state.Table;
@@ -199,6 +201,10 @@ public class GameController {
                 {
                     isSolved.set(true);
                     Finished(isSolved);
+                    GameResult game_res =
+                            new GameResult(playerName,stepCount.getValue(),stopwatch.secondsProperty().get());
+                    ScoreReadWrite rw = new ScoreReadWrite();
+                    rw.addRes(game_res);
                 }
             }
         }else
