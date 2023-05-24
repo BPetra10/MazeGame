@@ -13,6 +13,9 @@ import org.tinylog.Logger;
 
 import java.time.Duration;
 
+/**
+ * Handling scores, and saving them. Restarting the game.
+ * */
 public class HighScoresController {
     @FXML
     private TableColumn<GameResult, String> player;
