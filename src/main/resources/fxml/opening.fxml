@@ -29,8 +29,7 @@
          <font>
             <Font size="14.0" />
          </font></Label>
-      <!--onAction="#handleScoreBoardLoad"-->
-      <Button fx:id="ScoreboardLoad" layoutX="311.0" layoutY="288.0" mnemonicParsing="false"  prefHeight="51.0" prefWidth="125.0" text="Load scoreboard">
+      <Button fx:id="ScoreboardLoad" layoutX="311.0" layoutY="288.0" mnemonicParsing="false" onAction="#handleScoreBoardLoad" prefHeight="51.0" prefWidth="125.0" text="Load scoreboard">
          <font>
             <Font size="14.0" />
          </font></Button>

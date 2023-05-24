@@ -4,11 +4,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import maze.results.ScoreReadWrite;
 import org.tinylog.Logger;
 import utility.javafx.ControllerHelper;
+import utility.javafx.CopyHelper;
+import utility.javafx.FileChooserHelper;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -43,4 +47,19 @@ public class OpeningController {
             Logger.info("The user's name is set to {}, loading game scene.", playerNameTextField.getText());
         }
     }
+
+    /**
+     * We can open an XML file with FileChooserHelper, and storing it in a ScoreReadWrite file.
+     * @param actionEvent handling Load Scoreboard Button actions.
+     * */
+    public void handleScoreBoardLoad(ActionEvent actionEvent){
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        FileChooserHelper.show(true, stage)
+                .ifPresent(file -> {
+                    ScoreReadWrite rw = new ScoreReadWrite();
+                    CopyHelper.Copy(file,rw.getFile());
+                });
+        Logger.debug("{} is pressed", ((Button) actionEvent.getSource()).getText());
+    }
+
 }
