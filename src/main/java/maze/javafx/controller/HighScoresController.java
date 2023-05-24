@@ -16,6 +16,8 @@ import maze.results.HighScore;
 import maze.results.ScoreReadWrite;
 import org.tinylog.Logger;
 import utility.javafx.ControllerHelper;
+import utility.javafx.CopyHelper;
+import utility.javafx.FileChooserHelper;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -65,6 +67,20 @@ public class HighScoresController {
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         Logger.debug("{} is pressed", ((Button) actionEvent.getSource()).getText());
         ControllerHelper.loadAndShowFXML(fxmlLoader, "/fxml/opening.fxml", stage);
+    }
+
+    /**
+     * We can save an XML file with FileChooserHelper from score.xml to our target file.
+     * @param actionEvent handling Save Scoreboard Button actions.
+     */
+    public void handleScoreBoardSave(ActionEvent actionEvent){
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        FileChooserHelper.show(false, stage)
+                .ifPresent(file -> {
+                    ScoreReadWrite rw = new ScoreReadWrite();
+                    CopyHelper.Copy(rw.getFile(),file);
+                });
+        Logger.debug("{} is pressed", ((Button) actionEvent.getSource()).getText());
     }
 
 }
